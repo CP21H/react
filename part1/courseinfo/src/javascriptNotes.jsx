@@ -78,6 +78,87 @@ console.log(rest)           // 3, 4, 5 printed
 //
 // Sub-section 4: Objects
 //
-// Notes: - 
+// Notes: - One way to define objects is through 'Object Literals', by listing properties
+//          in braces {}
+//        - Values of these properties can be any type
+//        - Object properties are referenced via dot operator or brackets
+//        - Properties can also be dynamically added by using dot notation or brackets
 //
 //==============================================
+
+const object1 = {
+    name: 'Arto Hellas',
+    age: 35,
+    education: 'PhD',
+}
+
+const object2 = {
+    name: 'Full Stack web application development',
+    level: 'intermediate studies', 
+    size: 5,
+}
+
+const object3 = {
+    name: {
+        first: 'Dan', 
+        last: 'Abramov',
+    },
+    grades: [2, 3, 5, 3],
+    department: 'Stanford University',
+}
+
+console.log(object1.name)       // Arto Hellas printed
+const fieldName = 'age'
+console.log(object1[fieldName]) // 35 printed
+
+// Dynamic property addition
+object1.address = 'Helsinki'
+object1['secret number'] = 12341
+
+//==============================================
+//
+// Sub-section 5: Functions
+//
+// Notes: - One line arrow functions can be useful for when we use map()
+//        - Arrow function was added in 2015, ES6
+//        - Before arrow functions, you had to write functions using 'function'
+//
+//
+//
+//
+//==============================================
+
+// Arrow Function, multi-parameter, Standard
+const sum = (p1, p2) => {
+   console.log(p1)
+   console.log(p2)
+   return p1 + p2 
+}
+
+const result = sum(1, 5)
+console.log(result)
+
+// Arrow Function, single-parameter, Standard
+const square = p => {
+    console.log(p)
+    return p * p 
+}
+
+const square_on_one_line = p => p * p
+
+const t_new = [1, 2, 3]
+const tSquared = t.map(p => p * p)
+
+// Old, pre-ES6, function declaration
+function product(a, b) {
+    return a * b
+}
+
+const result_new = product(2, 6)
+
+// Old, pre-ES6, funnction expression
+const average = function(a, b) {
+    return (a + b) / 2
+}
+
+const result_again = average(2, 5)
