@@ -123,9 +123,6 @@ object1['secret number'] = 12341
 //        - Arrow function was added in 2015, ES6
 //        - Before arrow functions, you had to write functions using 'function'
 //
-//
-//
-//
 //==============================================
 
 // Arrow Function, multi-parameter, Standard
@@ -162,3 +159,57 @@ const average = function(a, b) {
 }
 
 const result_again = average(2, 5)
+
+//==============================================
+//
+// Sub-section 6: Object methods and "this"
+//
+// Notes: - React Hooks actually make it so that we don't need to define objects with
+//          methods
+//        - We can assign methods to an object by defining props that are functions
+//        - Methods can be assigned to objects even after creation
+//
+//==============================================
+
+const arto = {
+    name: 'Arto Hellas', 
+    age: 35,
+    education: 'PhD',
+    greet: function() {
+        console.log('hello, my name is ' + this.name)
+    },
+}
+
+arto.greet()
+
+arto.growOlder = function() {
+    this.age += 1
+}
+
+console.log(arto.age)   // 35
+arto.growOlder()
+console.log(arto.age)   // 36
+
+//==============================================
+//
+// Sub-section 7: Classes
+//
+// Notes: - ES6 simplified class definition for JS which usually has no class mechanism
+//        - In React, we typically won't use classes because we can use Hooks
+//
+//==============================================
+class Person {
+    constructor(name, age) {
+        this.name = name
+        this.age = age
+    }
+    greet() {
+        console.log('hello, my name is' + this.name)
+    }
+}
+
+const adam = new Person('Adam Ondra', 29)
+adam.greet()
+
+const janja = new Person('Janja Garnbret', 23)
+janja.greet()

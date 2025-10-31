@@ -81,6 +81,7 @@ const App = () => {
 //
 //==============================================
 
+/*
 const Hello = (props) => {
   console.log(props)
   return (
@@ -103,6 +104,7 @@ const App = () => {
     </>
   )
 }
+*/  
 
 //==============================================
 //
@@ -116,17 +118,87 @@ const App = () => {
 //
 //==============================================
 
+//==============================================
+//
+// Part 1C: Component state, event handlers
+// Sub-section 1: Component helper functionss
+//
+// Notes: - In the bornYear() function we added to the component, we don't need to pass
+//          in any parameters because it can already access props
+//        - Defining functions within functions like this is common practice in JavaScript
+//          and is how we create helper functions that make sense in terms of location
+//
+//==============================================
 
+/*
+const Hello = (props) => {
+  const bornYear = () => {
+    const yearNow = new Date().getFullYear()
+    return yearNow - props.age
+  }
+  
 
+  return (
+    <div> 
+      <p>Hello {props.name}, you are {props.age} years old</p>
+      <p>So you were probably born in {bornYear()}</p>
+    </div>
+  )
+}
 
+const App = () => {
+  const name = 'Peter'
+  const age = 10
+  return (
+    <>
+      <h1>Greetings</h1>
+      <Hello name='Maya' age={26+10} />
+      <Hello name={name} age={age} />
+    </>
+  )
+}
+*/
 
+//==============================================
+//
+// Sub-section 2: Destructuring
+//
+// Notes: - Streamline components by shortening what we have to write with destructuring
+//        - Instead of using props.name every time, just store it as name, same with age
+//
+//==============================================
 
+// You can even take it a step further and use the convention in the parameter list
+// const Hello = ({name, age}) => {}
+const Hello = (props) => {
+  const name = props.name
+  const age = props.age
+  // CAN ALSO BE DONE LIKE THIS, AND STILL WORK THE SAME:
+  // const {name, age} = props
 
+  const bornYear = () => new Date().getFullYear() - age
+  
+  return (
+    <div> 
+      <p>Hello {name}, you are {age} years old</p>
+      <p>So you were probably born in {bornYear()}</p>
+    </div>
+  )
+}
 
+//==============================================
+//
+// Sub-section 3: Page re-rendering
+//
+// Notes: - Handled in main.jsx
+//
+//==============================================
 
-
-
-
-
+const App = (props) => {
+  const {counter} = props
+  return (
+    <div>{counter}</div>
+  )
+}
 
 export default App
