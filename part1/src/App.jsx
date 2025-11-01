@@ -170,6 +170,7 @@ const App = () => {
 
 // You can even take it a step further and use the convention in the parameter list
 // const Hello = ({name, age}) => {}
+  /*
 const Hello = (props) => {
   const name = props.name
   const age = props.age
@@ -185,6 +186,7 @@ const Hello = (props) => {
     </div>
   )
 }
+  */
 
 //==============================================
 //
@@ -194,10 +196,142 @@ const Hello = (props) => {
 //
 //==============================================
 
+/*
 const App = (props) => {
   const {counter} = props
   return (
     <div>{counter}</div>
+  )
+}
+*/  
+
+//==============================================
+//
+// Sub-section 4: Stateful Component
+//
+// Notes: - When setCounter is called, the react component is re-rendered
+//
+//==============================================
+
+import { useState } from "react"
+
+/*
+const App = () => {
+  // Array containing two items, counter, setCounter
+  const [ counter, setCounter ] = useState(0)
+
+  setTimeout(
+    // setCounter becomes a function that increments counter by 1
+    () => setCounter(counter + 1),
+    1000
+  )
+
+  return (
+    <div>{counter}</div>
+  )
+}
+*/
+
+//==============================================
+//
+// Sub-section 5: Event handling
+//
+// Notes: - Event handlers are declared where we declare their onClick attributes
+//        - They should, though, be declared as their own functions before use to just 
+//          reference them
+//
+//==============================================
+
+
+/* const App = () => {
+  const [ counter, setCounter ] = useState(0)
+
+  const handleClick = () => {
+    console.log('clicked')
+  }
+
+  
+  return (
+    <div>
+      <div>{counter}</div>
+      <button onClick={() => setCounter(counter + 1)}>
+        plus
+      </button>
+      <button onClick={() => setCounter(counter - 1)}>
+        subtract
+      </button>
+      <button onClick={() => setCounter(0)}>
+        zero
+      </button>
+    </div>
+  )
+  
+
+  const increaseByOne = () => setCounter(counter + 1)
+  const setToZero = () => setCounter(0)
+ 
+  return (
+    <div>
+      <div>{counter}</div>
+      <button onClick={increaseByOne}>
+        plus
+      </button>
+      <button onClick={setToZero}>
+        zero
+      </button>
+    </div>
+  )
+} 
+*/
+
+//==============================================
+//
+// Sub-section 6: Passing state to child components
+//
+// Notes: - Moving the counter div and separate buttons to their own components
+//        - REACT CONVENTION: onSomething name for props which take functions
+//        - REACT CONVENTION: handleSomething for the actual function which handles events
+//        - Calling a function that changes the state causes the component to rerender
+//
+//==============================================
+
+const Display = ( {counter}) => {
+  return (
+    <div>{counter}</div>
+  )
+}
+
+const Button = ( {onClick, text}) => {
+  return (
+    <button onClick={onClick}>
+      {text}
+    </button>
+  )
+}
+
+const App = () => {
+  const [ counter, setCounter ] = useState(0)
+
+  const increaseByOne = () => setCounter(counter + 1)
+  const setToZero = () => setCounter(0)
+  const decreaseByOne = () => setCounter(counter - 1)
+ 
+  return (
+    <div>
+      <Display counter={counter}/>
+      <Button 
+        onClick = {increaseByOne}
+        text = 'plus'
+      />
+      <Button 
+        onClick = {setToZero}
+        text = 'zero'
+      />
+      <Button 
+        onClick = {decreaseByOne}
+        text = 'minus'
+      />
+    </div>
   )
 }
 

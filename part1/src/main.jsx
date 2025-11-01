@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client'
 
 import App from './App'
 
-let counter = 1
+//let counter = 1
 
 // Renders the content of our React Component "App" into the 
 // HTML element with the id "root"
@@ -14,7 +14,7 @@ let counter = 1
 // Notes: - Handled in main.jsx
 //
 //==============================================
-
+/*
 const root = ReactDOM.createRoot(document.getElementById('root'))
 
 const refresh = () => {
@@ -22,9 +22,11 @@ const refresh = () => {
         <App counter={counter} />
     )
 }
-/*
+
 setInterval(() => {
     refresh()
     counter += 1
 }, 1000)
 */
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />)
