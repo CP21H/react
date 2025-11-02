@@ -376,7 +376,7 @@ const App = () => {
 //
 // Sub-section 2: Handling arrays
 //
-// Notes: - 
+// Notes: - concat returns a new copy of the array as opposed to mutating the existing one
 //
 //==============================================
 
