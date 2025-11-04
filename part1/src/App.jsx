@@ -380,6 +380,7 @@ const App = () => {
 //
 //==============================================
 
+/*
 const App = () => {
   const [left, setLeft] = useState(0)
   const [right, setRight] = useState(0)
@@ -405,5 +406,123 @@ const App = () => {
     </div>
   )
 }
+  */
+
+//==============================================
+//
+// Sub-section 3: Update of the state is asynchronous
+//
+// Notes: - State updates in React happen asynchronously, meaning not immediately but at
+//          some point
+//
+//==============================================
+
+/*
+const App = () => {
+  const [left, setLeft] = useState(0)
+  const [right, setRight] = useState(0)
+  const [allClicks, setAll] = useState([])
+  const [total, setTotal] = useState(0)
+
+  const handleLeftClick = () => {
+    setAll(allClicks.concat('L'))
+    // OLD WAY
+    //setLeft(left + 1)
+    //setTotal(left + right)
+    
+    // NEW -- IMMEDIATE WAY TO REFLECT ASYNC
+    const updatedLeft = left + 1
+    setLeft(updatedLeft)
+    setTotal(updatedLeft + right)
+  }
+
+  const handleRightClick = () => {
+    setAll(allClicks.concat('R'))
+    // OLD WAY
+    //setRight(right + 1)
+    //setTotal(left + right)
+
+    const updatedRight = right + 1
+    setRight(updatedRight)
+    setTotal(updatedRight + left)
+  }
+
+  return (
+    <div>
+      {left}
+      <button onClick={handleLeftClick}>left</button>
+      <button onClick={handleRightClick}>right</button>
+      {right}
+      <p>{allClicks.join(' ')}</p>
+      <p>total {total}</p>
+    </div>
+  )
+}
+*/
+
+//==============================================
+//
+// Sub-section 4: Conditional Rendering
+//
+// Notes: - History here, through if statements, acts as a conditional renderer of state
+//          in our application
+//        - Refactored to include button component to handle clicks
+//
+//==============================================
+
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return (
+      <div>
+        the app is used by pressing the buttons
+      </div>
+    )
+  }
+  return (
+    <div>
+      button press history: {props.allClicks.join(' ')}
+    </div>
+  )
+}
+
+const Button = ({ onClick, text }) => <button onClick={onClick}>{text}</button>
+
+const App = () => {
+  const [left, setLeft] = useState(0)
+  const [right, setRight] = useState(0)
+  const [allClicks, setAll] = useState([])
+
+  const handleLeftClick = () => {
+    setAll(allClicks.concat('L'))
+    setLeft(left + 1)
+  }
+
+  const handleRightClick = () => {
+    setAll(allClicks.concat('R'))
+    setRight(right + 1)
+  }
+
+  return (
+    <div>
+      {left}
+      <Button onClick={handleLeftClick} text='left' />
+      <Button onClick={handleRightClick} text='right' />
+      {right}
+      <History allClicks={allClicks}/>
+    </div>
+  )
+}
+
+//==============================================
+//
+// Sub-section 5: Debugging
+//
+// Notes: - Having the console open is a must at all times
+//        - Classic print statement testing for informative, line-by-line display
+//        - If we write "debugger" somewhere in the app, the app will pause there 
+//        - React developer tools extension can be used to debug in Chrome
+//
+//==============================================
+
 
 export default App
