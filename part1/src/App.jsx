@@ -524,5 +524,30 @@ const App = () => {
 //
 //==============================================
 
+//==============================================
+//
+// Sub-section 6: Rules of Hooks
+//
+// Notes: - useState and useEffect must not be called from inside of a loop or any place 
+//          that is not a function which defines a component
+//        - This is to ensure that hooks are called in the correect order
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 7: Event-handling revisited
+//
+// Notes: - Event handlers must always be a function or a reference to a function
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 8: Passing Event Handlers to Child Components
+//
+// Notes: - 
+//
+//==============================================
 
 export default App
