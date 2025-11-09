@@ -470,6 +470,7 @@ const App = () => {
 //
 //==============================================
 
+/*
 const History = (props) => {
   if (props.allClicks.length === 0) {
     return (
@@ -512,6 +513,7 @@ const App = () => {
     </div>
   )
 }
+*/
 
 //==============================================
 //
@@ -546,8 +548,35 @@ const App = () => {
 //
 // Sub-section 8: Passing Event Handlers to Child Components
 //
-// Notes: - 
+// Notes: - We can pass an event handler, like onClick, with custom inline function,
+//          into a button component or any component, and have it run that function
+//        - Aside: never define components within components
 //
 //==============================================
+
+// Suppose we move the button into its own component
+const Button = (props) => (
+  <button onClick={props.onClick}>
+    {props.text}
+  </button>
+)
+
+const App = () => {
+  const [value, setValue] = useState(10)
+
+  const setToValue = (newValue) => {
+    console.log('value now', newValue)
+    setValue(newValue)
+  }
+
+  return (
+    <div>
+      {value}
+      <Button onClick={() => setToValue(1000)} text="thousand" />
+      <Button onClick={() => setToValue(0)} text="reset" />
+      <Button onClick={() => setToValue(value + 1)} text="increment" />
+    </div>
+  )
+}
 
 export default App
