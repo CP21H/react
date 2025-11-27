@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 
@@ -77,6 +76,7 @@ const App = (props) => {
 //
 //==============================================
 
+/*
 import Note from "./components/Note"
 
 const App = ( {notes} ) => {
@@ -93,5 +93,55 @@ const App = ( {notes} ) => {
     </>
   )
 }
+*/
+
+//==============================================
+//
+// Part 2b: Forms
+// Sub-section 1: Saving notes in the component state
+//
+// Notes: - How can we access the data that is stored in the input for the form?
+//
+//==============================================
+
+import { useState } from 'react'
+import Note from "./components/Note"
+
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes)
+
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    console.log('button clicked', event.target)
+  }
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <ul>
+          {notes.map(note => 
+            <Note key={note.id} note={note} />
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
+
+//==============================================
+//
+// Sub-section 2: Controlled Component
+//
+// Notes: - N/A
+//
+//==============================================
+
+
 
 export default App
