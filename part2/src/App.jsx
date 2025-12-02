@@ -104,6 +104,7 @@ const App = ( {notes} ) => {
 //
 //==============================================
 
+/*
 import { useState } from 'react'
 import Note from "./components/Note"
 
@@ -133,15 +134,79 @@ const App = (props) => {
     </>
   )
 }
+*/
 
 //==============================================
 //
 // Sub-section 2: Controlled Component
 //
-// Notes: - N/A
+// Notes: - target corresponds to the controlled input element
+//        - event.target.value corresponds to the value of the input / how we access it
+//        - setNotes is used here as the interface with which we interact with notes 
+//          as a data structure passed in from main.jsx to manipulate its state
+//        - But the original `notes` structure isn't mutated at all, we actually make
+//          a copy of it since we never mutate state directly in React
+//        - Conditional operator syntax shown in notesToShow
 //
 //==============================================
 
+import { useState } from 'react'
+import Note from "./components/Note"
+
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes)
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+      id: String(notes.length + 1),
+    }
+
+    setNotes(notes.concat(noteObject))
+    setNewNote('')
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} />
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
 
 
 export default App
