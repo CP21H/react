@@ -218,6 +218,7 @@ const App = (props) => {
 
 //==============================================
 
+/*
 import { useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
@@ -289,5 +290,108 @@ const App = () => {
     </div>
   )
 }
+
+*/
+
+//==============================================
+//
+// Part 2c: Getting data from the server
+// Sub-section 1: Browser as a runtime environment
+//
+// Notes: - JavaScript runtime environments follow the asynchronous model
+//        - Requires all I/O operations to be executed as non-blocking, meaning you don't
+//          wait for it to return, you just move on to the next line
+//        - JavaScript engines are inherently single-threaded, so non-block model is 
+//          very necessary to avoid freezes
+//
+//==============================================
+
+import { useState } from 'react'
+import Note from "./components/Note"
+
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes)
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+      id: String(notes.length + 1),
+    }
+
+    setNotes(notes.concat(noteObject))
+    setNewNote('')
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} />
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
+
+//==============================================
+//
+// Part 2c: Getting data from the server
+// Sub-section 2: Axios and promises
+//
+// Notes: - To run the server so that we can access db.json, run ```npm run server```
+//        - A promise is an object representing the eventual completionn or failure 
+//          of an async operation
+//        - A promise can have 3 states: fulfilled, pending, rejected
+//        - If we want to access the result of the operation, we must register an event
+//          handler to the promise, using the method 'then'
+//        - 'response' has all the HTTP GET data
+//
+//==============================================
+
+import axios from 'axios'
+
+// This gets 'fulfilled' since it exists
+// const promise = axios.get('http://localhost:3001/notes')
+// console.log(promise)
+
+// Storing the promise as a variable isn't common convention, usually just chain it
+axios.get('http://localhost:3001/notes').then(response => {
+  console.log(response)
+})
+
+// This gets 'rejected' since it does not exist
+// const promise2 = axios.get('https://localhost:3001/foobar')
+// console.log(promise2)
 
 export default App
