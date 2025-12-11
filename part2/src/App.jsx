@@ -408,6 +408,7 @@ axios.get('http://localhost:3001/notes').then(response => {
 //
 //==============================================
 
+/*
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Note from "./components/Note"
@@ -479,6 +480,7 @@ const App = () => {
     </>
   )
 }
+*/  
 
 //==============================================
 //
@@ -492,5 +494,97 @@ const App = () => {
 //        - JSON-Server: Sends JSON to the Browser, Gets db.json from data
 //
 //==============================================
+
+//==============================================
+//
+// Sub-section 2.11->: Exercises
+//
+// Notes: - `useEffect` here properly allows us to store the phonebook information
+//          somewhere else, which here is db.json, and then just update a state array
+//          with its information when needed
+//
+//==============================================
+
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
+const App = () => {
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [search, setSearch] = useState('')
+
+  //*=======* EFFECT ADDITION START *=======*
+  const [persons, setPersons] = useState([])
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons') // fetch data from our json server
+      .then(response => {                 // after data arrives, execute event handler
+        console.log('promise fulfilled')  
+        setPersons(response.data)
+      })
+  }, [])
+  //*=======* EFFECT ADDITION END *=======*
+
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const updatePhonebook = (event) => {
+    event.preventDefault()
+    const flag = true
+    
+    persons.forEach(person => {
+      if (person.name == newName) {
+        alert(`${newName} is in the phonebook`)
+        flag = false
+      }
+    })
+
+    if (flag == true) {
+      const personObject = {
+        id: String(persons.length + 1),
+        name: newName,
+        number: newNumber,
+      }
+
+      setPersons(persons.concat(personObject))
+      setNewName('')
+    }
+  }
+
+  const filteredPersons = persons.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+
+      <Filter search={search} setSearch={setSearch}/>
+
+      <h3>Add a New Person</h3>
+
+      <PersonForm 
+        newName={newName}
+        nameHandler={handleNameChange}
+        newNumber={newNumber}
+        numberHandler={handleNumberChange}
+        update={updatePhonebook}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons persons={filteredPersons}/>
+    </div>
+  )
+}
 
 export default App
