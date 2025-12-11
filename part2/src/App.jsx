@@ -505,7 +505,7 @@ const App = () => {
 //
 //==============================================
 
-
+/*
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
@@ -586,5 +586,102 @@ const App = () => {
     </div>
   )
 }
+*/
+
+//==============================================
+//
+// Part 2d: Altering data in server
+// Sub-section 1: REST
+//
+// Notes: - Resources: Individual data objects, such as our notes or phonebook
+//                  > Every resource has a unique address associated with it - its URL
+//        - Resources are fetched from the server with HTTP GET requests
+//        - Creating a new resource for storing a note is done through an HTTP POST request
+//        - JSON-Server requires data to be sent in JSON format
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 2: Sending Data to Server
+//
+// Notes: - 
+//
+//==============================================
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Note from "./components/Note"
+
+const App = () => {
+  const [notes, setNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes') // fetch data from our json server
+      .then(response => {                 // after data arrives, execute event handler
+        console.log('promise fulfilled')  
+        setNotes(response.data)
+      })
+  }, [])
+
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+    }
+
+    axios 
+      .post('http://localhost:3001/notes', noteObject)
+      .then(response => {
+        console.log(response)
+      })
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} />
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
+
+
+
+
 
 export default App
