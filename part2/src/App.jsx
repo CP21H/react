@@ -306,6 +306,7 @@ const App = () => {
 //
 //==============================================
 
+/*
 import { useState } from 'react'
 import Note from "./components/Note"
 
@@ -363,10 +364,10 @@ const App = (props) => {
     </>
   )
 }
+*/
 
 //==============================================
 //
-// Part 2c: Getting data from the server
 // Sub-section 2: Axios and promises
 //
 // Notes: - To run the server so that we can access db.json, run ```npm run server```
@@ -379,6 +380,7 @@ const App = (props) => {
 //
 //==============================================
 
+/*
 import axios from 'axios'
 
 // This gets 'fulfilled' since it exists
@@ -393,5 +395,102 @@ axios.get('http://localhost:3001/notes').then(response => {
 // This gets 'rejected' since it does not exist
 // const promise2 = axios.get('https://localhost:3001/foobar')
 // console.log(promise2)
+*/
+
+//==============================================
+//
+// Sub-section 3: Effect-hooks
+//
+// Notes: - Effects let a component connect to and sync with external systems -- includes
+//          dealing with network, browser DOM, animations, widgets, etc. written by a 
+//          different UII library and otther non-React code
+//        - Good for fetching data from a server
+//
+//==============================================
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Note from "./components/Note"
+
+const App = () => {
+  const [notes, setNotes] = useState([])  // changed to an array, no props
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  //*=======* EFFECT ADDITION START *=======*
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes') // fetch data from our json server
+      .then(response => {                 // after data arrives, execute event handler
+        console.log('promise fulfilled')  
+        setNotes(response.data)
+      })
+  }, [])
+  console.log('render', notes.length, 'notes')
+  //*=======* EFFECT ADDITION END *=======*
+
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+      id: String(notes.length + 1),
+    }
+
+    setNotes(notes.concat(noteObject))
+    setNewNote('')
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} />
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
+
+//==============================================
+//
+// Sub-section 4: Development Runtime Environment
+//
+// Notes: - Suppose we have four areas to deal with: Browser, Data, React-Dev-Server, and
+//          the JSON-Server
+//        - Browser: Holds the React app and is where we run the app
+//        - React-Dev-Server: Sends the JavaScript to the browser via `npm run dev`, Gets
+//                            app.js and index.js from data
+//        - JSON-Server: Sends JSON to the Browser, Gets db.json from data
+//
+//==============================================
 
 export default App
