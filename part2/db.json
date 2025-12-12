@@ -19,6 +19,11 @@
       "id": "5107",
       "content": "nptes",
       "important": false
+    },
+    {
+      "id": "2496",
+      "content": "POST is used to add data",
+      "important": false
     }
   ]
 }

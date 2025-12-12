@@ -605,10 +605,13 @@ const App = () => {
 //
 // Sub-section 2: Sending Data to Server
 //
-// Notes: - 
+// Notes: - We can modify data within the JSON-Server by either using:
+//          1. HTTP PUT - to replace the note or object here
+//          2. HTTP PATCH - to change only some of  the note's properties
 //
 //==============================================
 
+/*
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Note from "./components/Note"
@@ -617,6 +620,19 @@ const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const toggleImportanceOf = (id) => {
+    const url = `http://localhost:3001/notes/${id}` // defines URL for each resource
+    const note = notes.find(n => n.id === id)       // find the note we want to modify
+    // create an exact copy of the note we found, except for the important property
+    const changedNote = { ...note, important: !note.important }
+
+    axios.put(url, changedNote).then(response => {
+      // update notes array (if the curr notes id is the same as the id of the note
+      // we want to change the importance of, then add the new note to the array, 
+      // if it's note, add the old note to the new array)
+      setNotes(notes.map(note => note.id === id ? response.data : note))
+    })
+  }
 
   useEffect(() => {
     console.log('effect')
@@ -639,7 +655,8 @@ const App = () => {
     axios 
       .post('http://localhost:3001/notes', noteObject)
       .then(response => {
-        console.log(response)
+        setNotes(notes.concat(response.data))
+        setNewNote('')
       })
   }
 
@@ -665,7 +682,7 @@ const App = () => {
         </div>
         <ul>
           {notesToShow.map(note => 
-            <Note key={note.id} note={note} />
+            <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
           )}
         </ul>
         <form onSubmit={addNote}>
@@ -679,9 +696,100 @@ const App = () => {
     </>
   )
 }
+*/
 
+//==============================================
+//
+// Sub-section 3: Extracting Communication with the Backend into a Separate Module
+//
+// Notes: - Created src/services and notes.js
+//
+//==============================================
 
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Note from "./components/Note"
+import noteService from './services/notes'
 
+const App = () => {
+  const [notes, setNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
 
+  // *========= REVISED VERSION USING NOTESERVICE
+  const toggleImportanceOf = (id) => {
+    const note = notes.find(n => n.id === id)       // find the note we want to modify
+    // create an exact copy of the note we found, except for the important property
+    const changedNote = { ...note, important: !note.important }
+
+    noteService
+      .update(id, changedNote)
+      .then(response => {
+        setNotes(notes.map(note => note.id == id ? response.data : note))
+      })
+  }
+
+  // *========= REVISED VERSION USING NOTESERVICE
+  useEffect(() => {
+    noteService
+      .getAll()
+      .then(response => {
+        setNotes(response.data)
+      })
+  }, [])
+
+  // *========= REVISED VERSION USING NOTESERVICE
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+    }
+
+    noteService
+      .create(noteObject)
+      .then(response => {
+        setNotes(notes.concat(response.data))
+        setNewNote('')
+      })
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
+  )
+}
 
 export default App
