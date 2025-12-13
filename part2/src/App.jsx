@@ -706,6 +706,7 @@ const App = () => {
 //
 //==============================================
 
+/*
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Note from "./components/Note"
@@ -726,6 +727,13 @@ const App = () => {
       .update(id, changedNote)
       .then(returnedNote => {
         setNotes(notes.map(note => note.id == id ? returnedNote : note))
+      })
+      .catch(error => {
+        alert(
+          `the note '${note.content}' was already deleted from the server`
+        )
+        // update notes, keeping the ones on the server and removing the non-existant one
+        setNotes(notes.filter(n => n.id !== id))
       })
   }
 
@@ -789,6 +797,111 @@ const App = () => {
         </form>
       </div>
     </>
+  )
+}
+*/
+
+//==============================================
+//
+// Sub-section 5: Promises and Errors
+//
+// Notes: - Error 404 (Not Found) appears if we display a non-existing note and try to
+//          change its importance when it doesn't exist on the server
+//        - Handling rejected promises can be done through using `catch` method as an error
+//          handler
+//          - It is just added after the .then as a .catch handle
+//          - If we have multiple .thens, creating a chain, if any single one of them results
+//            in an error, the .catch is ran
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 2.12->: Exercises
+//
+// Notes: - 
+//
+//==============================================
+
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
+const App = () => {
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [search, setSearch] = useState('')
+
+  //*=======* EFFECT ADDITION START *=======*
+  const [persons, setPersons] = useState([])
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons') // fetch data from our json server
+      .then(response => {                 // after data arrives, execute event handler
+        console.log('promise fulfilled')  
+        setPersons(response.data)
+      })
+  }, [])
+  //*=======* EFFECT ADDITION END *=======*
+
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const updatePhonebook = (event) => {
+    event.preventDefault()
+    const flag = true
+    
+    persons.forEach(person => {
+      if (person.name == newName) {
+        alert(`${newName} is in the phonebook`)
+        flag = false
+      }
+    })
+
+    if (flag == true) {
+      const personObject = {
+        id: String(persons.length + 1),
+        name: newName,
+        number: newNumber,
+      }
+
+      setPersons(persons.concat(personObject))
+      setNewName('')
+    }
+  }
+
+  const filteredPersons = persons.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+
+      <Filter search={search} setSearch={setSearch}/>
+
+      <h3>Add a New Person</h3>
+
+      <PersonForm 
+        newName={newName}
+        nameHandler={handleNameChange}
+        newNumber={newNumber}
+        numberHandler={handleNumberChange}
+        update={updatePhonebook}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons persons={filteredPersons}/>
+    </div>
   )
 }
 
