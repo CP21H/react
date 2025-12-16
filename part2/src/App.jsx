@@ -829,6 +829,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [newName, setNewName] = useState('')
@@ -848,6 +849,14 @@ const App = () => {
       })
   }, [])
   //*=======* EFFECT ADDITION END *=======*
+
+  const removePerson = (event) => {
+    personService
+      .remove()
+      .then(returnedPerson => {
+        setNotes(persons.map(person => person.id == id ? returnedPerson : note))
+      })
+  }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -875,8 +884,12 @@ const App = () => {
         number: newNumber,
       }
 
-      setPersons(persons.concat(personObject))
-      setNewName('')
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+      })
     }
   }
 
@@ -900,9 +913,10 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={filteredPersons}/>
+      <Persons persons={filteredPersons} remove={removePerson}/>
     </div>
   )
 }
+
 
 export default App
