@@ -828,7 +828,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import Persons from './components/Persons'
+import Person from './components/Person'
 import personService from './services/persons'
 
 const App = () => {
@@ -850,11 +850,11 @@ const App = () => {
   }, [])
   //*=======* EFFECT ADDITION END *=======*
 
-  const removePerson = (event) => {
+  const removePerson = (id) => {
     personService
-      .remove()
+      .remove(id)
       .then(returnedPerson => {
-        setNotes(persons.map(person => person.id == id ? returnedPerson : note))
+        setPersons(persons.map(person => person.id == id ? returnedPerson : person))
       })
   }
 
@@ -868,11 +868,22 @@ const App = () => {
 
   const updatePhonebook = (event) => {
     event.preventDefault()
-    const flag = true
+    let flag = true
     
     persons.forEach(person => {
       if (person.name == newName) {
-        alert(`${newName} is in the phonebook`)
+        if (confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)) {
+          const personObject = {
+            id: String(person.id),
+            name: person.name,
+            number: newNumber,
+          }
+
+          personService
+            .update(person.id, personObject)
+        }
+
+        // can stay so that the new person logic continues
         flag = false
       }
     })
@@ -913,7 +924,11 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons persons={filteredPersons} remove={removePerson}/>
+      <ul>
+        {filteredPersons.map(person => 
+          <Person key={person.id} person={person} remove={() => {removePerson(person.id)}}/>
+        )}
+      </ul>
     </div>
   )
 }
