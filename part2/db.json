@@ -1,19 +1,29 @@
 {
-  "persons": [
+  "notes": [
     {
       "id": "1",
-      "name": "Arto Hellas",
-      "number": "1239085093480"
+      "content": "HTML is easy",
+      "important": true
     },
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": "2"
+      "id": "2",
+      "content": "Browser can execute only JavaScript",
+      "important": false
     },
     {
       "id": "3",
-      "name": "test",
-      "number": "123456789"
+      "content": "GET and POST are the most important methods of HTTP protocol",
+      "important": true
+    },
+    {
+      "id": "5107",
+      "content": "nptes",
+      "important": false
+    },
+    {
+      "id": "2496",
+      "content": "POST is used to add data",
+      "important": false
     }
   ]
 }

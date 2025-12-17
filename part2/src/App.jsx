@@ -823,7 +823,7 @@ const App = () => {
 //
 //==============================================
 
-
+/*
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
@@ -930,6 +930,111 @@ const App = () => {
         )}
       </ul>
     </div>
+  )
+}
+*/
+
+
+//==============================================
+//
+// Part 2e: Adding styles to React app
+// Sub-section 1: ...
+//
+// Notes: - Handled in index.css
+//
+//==============================================
+
+import './index.css'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Note from "./components/Note"
+import noteService from './services/notes'
+
+const App = () => {
+  const [notes, setNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(true)
+
+  // *========= REVISED VERSION USING NOTESERVICE
+  const toggleImportanceOf = (id) => {
+    const note = notes.find(n => n.id === id)       // find the note we want to modify
+    // create an exact copy of the note we found, except for the important property
+    const changedNote = { ...note, important: !note.important }
+
+    noteService
+      .update(id, changedNote)
+      .then(returnedNote => {
+        setNotes(notes.map(note => note.id == id ? returnedNote : note))
+      })
+      .catch(error => {
+        alert(
+          `the note '${note.content}' was already deleted from the server`
+        )
+        // update notes, keeping the ones on the server and removing the non-existant one
+        setNotes(notes.filter(n => n.id !== id))
+      })
+  }
+
+  // *========= REVISED VERSION USING NOTESERVICE
+  useEffect(() => {
+    noteService
+      .getAll()
+      .then(initialNotes => {
+        setNotes(initialNotes)
+      })
+  }, [])
+
+  // *========= REVISED VERSION USING NOTESERVICE
+  // Event handler to the form element, called when form is submitted
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() < 0.5,
+    }
+
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
+        setNewNote('')
+      })
+  }
+
+  // Event handler that sets the new note content
+  const handleNoteChange = (event) => {
+    console.log(event.target.value)
+    setNewNote(event.target.value)
+  }
+
+  // Show all functionality
+  // const result = condition ? val1 : val2
+  // If showAll is true, show all the notes, if false, show the important notes only
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
+
+  return (
+    <>
+      <div>
+        <h1>Notes</h1>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? 'important' : 'all'}
+          </button>
+        </div>
+        <ul>
+          {notesToShow.map(note => 
+            <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)}/>
+          )}
+        </ul>
+        <form onSubmit={addNote}>
+          <input 
+            value={newNote}
+            onChange={handleNoteChange}
+          />
+          <button type="submit">save</button>
+        </form>
+      </div>
+    </>
   )
 }
 
