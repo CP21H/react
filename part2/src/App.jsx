@@ -944,16 +944,21 @@ const App = () => {
 //
 //==============================================
 
+/*
 import './index.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Note from "./components/Note"
 import noteService from './services/notes'
+import Notification from './components/Notification'
+import Footer from "./components/Footer"
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [notificationType, setNotificationType] = useState('none') // none, update or error
 
   // *========= REVISED VERSION USING NOTESERVICE
   const toggleImportanceOf = (id) => {
@@ -967,9 +972,13 @@ const App = () => {
         setNotes(notes.map(note => note.id == id ? returnedNote : note))
       })
       .catch(error => {
-        alert(
-          `the note '${note.content}' was already deleted from the server`
+        setNotificationType('error')
+        setErrorMessage(
+          `NOTE '${note.content}' was already removed from server`
         )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000);
         // update notes, keeping the ones on the server and removing the non-existant one
         setNotes(notes.filter(n => n.id !== id))
       })
@@ -999,6 +1008,13 @@ const App = () => {
         setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
+    setNotificationType('update')
+    setErrorMessage(
+          `NOTE 'Added ${note.content}'`
+        )
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000);
   }
 
   // Event handler that sets the new note content
@@ -1016,6 +1032,7 @@ const App = () => {
     <>
       <div>
         <h1>Notes</h1>
+        <Notification message={errorMessage} type={notificationType} />
         <div>
           <button onClick={() => setShowAll(!showAll)}>
             show {showAll ? 'important' : 'all'}
@@ -1033,8 +1050,159 @@ const App = () => {
           />
           <button type="submit">save</button>
         </form>
+        <Footer />
       </div>
     </>
+  )
+}
+*/
+
+//
+
+
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Person from './components/Person'
+import personService from './services/persons'
+import Notification from './components/Notification'
+import Footer from "./components/Footer"
+
+const App = () => {
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [search, setSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [notificationType, setNotificationType] = useState('none') // none, update or error
+
+  //*=======* EFFECT ADDITION START *=======*
+  const [persons, setPersons] = useState([])
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons') // fetch data from our json server
+      .then(response => {                 // after data arrives, execute event handler
+        console.log('promise fulfilled')  
+        setPersons(response.data)
+      })
+  }, [])
+  //*=======* EFFECT ADDITION END *=======*
+
+  const removePerson = (id) => {
+    personService
+      .remove(id)
+      .then(returnedPerson => {
+        setPersons(persons.map(person => person.id == id ? returnedPerson : person))
+        setNotificationType('error')
+        setErrorMessage(
+          `${returnedPerson.name} was removed from the Phonebook`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000);
+      })
+      .catch(error => {
+        setNotificationType('error')
+        setErrorMessage(
+          `That person was already removed from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000);
+        // update notes, keeping the ones on the server and removing the non-existant one
+        setPersons(persons.filter(p => p.id !== id))
+      })
+  }
+
+  const handleNameChange = (event) => {
+    setNewName(event.target.value)
+  }
+
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const updatePhonebook = (event) => {
+    event.preventDefault()
+    let flag = true
+    
+    persons.forEach(person => {
+      if (person.name == newName) {
+        if (confirm(`${newName} is already in the phonebook, replace the old number with a new one?`)) {
+          const personObject = {
+            id: String(person.id),
+            name: person.name,
+            number: newNumber,
+          }
+
+          personService
+            .update(person.id, personObject)
+            setNotificationType('update')
+            setErrorMessage(
+              `${newName}'s number was updated`
+            )
+            setNewName('')
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000);
+        }
+
+        // can stay so that the new person logic continues
+        flag = false
+      }
+    })
+
+    if (flag == true) {
+      const personObject = {
+        id: String(persons.length + 1),
+        name: newName,
+        number: newNumber,
+      }
+
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNotificationType('update')
+          setErrorMessage(
+            `${newName} was added to the Phonebook`
+          )
+          setNewName('')
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
+      })
+    }
+  }
+
+  const filteredPersons = persons.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div>
+      <h2>Phonebook</h2>
+      <Notification message={errorMessage} type={notificationType} />
+      <Filter search={search} setSearch={setSearch}/>
+      
+      <h3>Add a New Person</h3>
+      <PersonForm 
+        newName={newName}
+        nameHandler={handleNameChange}
+        newNumber={newNumber}
+        numberHandler={handleNumberChange}
+        update={updatePhonebook}
+      />
+
+      <h3>Numbers</h3>
+      <ul>
+        {filteredPersons.map(person => 
+          <Person key={person.id} person={person} remove={() => {removePerson(person.id)}}/>
+        )}
+      </ul>
+
+      <Footer />
+    </div>
   )
 }
 
