@@ -18,6 +18,7 @@
 //
 //==============================================
 
+/*
 const http = require('http')
 
 let notes = [
@@ -46,7 +47,7 @@ const app = http.createServer((request, response) => {
 const PORT = 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
-
+*/
 
 
 //==============================================
@@ -59,3 +60,39 @@ console.log(`Server running on port ${PORT}`)
 //        - Express is the most popular library used to make server-side dev. easier
 //
 //==============================================
+
+const express = require('express')
+const app = express()
+
+let notes = [
+  {
+    id: "1",
+    content: "HTML is easy",
+    important: true
+  },
+  {
+    id: "2",
+    content: "Browser can execute only JavaScript",
+    important: false
+  },
+  {
+    id: "3",
+    content: "GET and POST are the most important methods of HTTP protocol",
+    important: true
+  }
+]
+
+// Route 1
+app.get('/', (request, response) => {
+  response.send('<h1>Hello world!</h1>')
+})
+
+// Route 2: JSON stringifies the notes list
+app.get('/api/notes', (request, response) => {
+  response.json(notes)
+})
+
+const PORT = 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
