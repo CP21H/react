@@ -180,3 +180,52 @@ const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+//==============================================
+//
+// Sub-section 7: Deleting resources
+//  
+// Notes: - Deletion happens bby making an HTTP DELETE request to the URL of the resource
+//        - No consensus on what status code should return on DELETE, only two options are 
+//          204 and 404
+//
+//==============================================
+
+app.delete('/api/notes/:id', (request, response) => {
+  const id = request.params.id
+  notes = notes.filter(note => note.id !== id)  // keep the non-id notes
+
+  response.status(204).end()
+})
+
+//==============================================
+//
+// Sub-section 8: POSTMAN & REST client
+//  
+// Notes: - DELETE URL used: http://localhost:3001/api/notes/2
+//        - REST client makes it super easy to visualize how we can get API information
+//          and what exactly is being returned. This is stored in the requests folder
+//          where we can store HTTP requests and run them to view output
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 9: Receiving data
+//  
+// Notes: - Adding a note happens through making an HTTP POST request to the notes address
+//        - Use the Express json-parser to access the data easily
+//        - It is important when using POSTMAN to make sure that we set the Body Content-Type
+//          to JSON instead of the default Text
+//        - If I wanted multiple requests in one file for REST client, you can separate them
+//          using `###` as a divider
+//
+//==============================================
+
+app.use(express.json())
+
+app.post('/api/notes', (request, response) => {
+  const note = request.body
+  console.log(note)
+  response.json(note)
+})
