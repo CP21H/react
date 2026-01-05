@@ -285,3 +285,32 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.use(unknownEndpoint)
+
+
+
+//==============================================
+//
+// Part 3b: Deploying app to internet
+//
+// Notes: - Changed baseUrl in frontend src/services/notes.js
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 1: Same origin policy and CORS
+//
+// Notes: - A URL's origin is defined by the combination of protocol, host, port
+//        - If the resource fetched doeesn't share the same origin (scheme, host, port)
+//          as the source HTML, the browser checks 'Access-Control-Allow-origin' response
+//          header
+//        - If this header contains *, browser will process, if not, it will refuse
+//        - same-origin-policy is a security mechanism to prevent session hijacking
+//        - CORS (Cross-Origin Resource Sharing) allows resitrcted resources to be requested
+//          from aanother domain outside the domain where it was served
+//          >- We can allow requests from other origins using Nodes 'cors' middleware
+//
+//==============================================
+
+const cors = require('cors')
+app.use(cors())
