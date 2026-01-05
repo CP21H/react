@@ -250,3 +250,38 @@ app.post('/api/notes', (request, response) => {
  
   response.json(note)
 })
+
+//==============================================
+//
+// Exercises 3.1 -> 3.6 handled in exercises.js
+// and POSTMAN
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 10: Middleware
+//  
+// Notes: - The Express json-parser is a middleware
+//        - Middleware are functions that can be used for handling request and response
+//          objects
+//        - next() function yields control to the next middleware
+//        - Middleware is then used using app.use(x)
+//
+//==============================================
+
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+app.use(requestLogger)
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({error: 'unknown endpoint'})
+}
+
+app.use(unknownEndpoint)

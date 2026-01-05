@@ -7,7 +7,13 @@
 //==============================================
 
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
+
+morgan.token('user', function getUser (req) {
+    return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :response-time ms :user'))
 
 let persons = [
     { 
@@ -84,6 +90,13 @@ app.post('/api/persons', (request, response) => {
     if (!body.name && !body.number) {
         return response.status(404).json({
             error: 'content missing'
+        })
+    }
+
+    const exists = persons.find(person => person.name === body.name)
+    if (exists) {
+        return response.status(404).json({
+            error: 'name must be unique'
         })
     }
 
