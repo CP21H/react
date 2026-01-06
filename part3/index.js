@@ -157,7 +157,7 @@ let notes = [
 
 // Route 1
 app.get('/', (request, response) => {
-  response.send('<h1>Hello world!</h1>')
+  response.send('index.html')
 })
 
 // Route 2: JSON stringifies the notes list
@@ -176,7 +176,7 @@ app.get('/api/notes/:id', (request, response) => {
   }
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
@@ -314,3 +314,20 @@ app.use(unknownEndpoint)
 
 const cors = require('cors')
 app.use(cors())
+
+//==============================================
+//
+// Sub-section 2: Application to the Internet
+//                Frontend Production Build
+//                Servicing static files from the backend
+//
+// Notes: - A production build for apps created with Vite can be created with the command
+//          `npm run build`
+//        - You can deploy the frontend by copying the prod build (dist directory) to the root
+//          of the backend directory and configure the backend to show the main page of the
+//          frontend (dist/index.html)
+//        - To make Express show static content, we use the middleware called `static`
+//
+//==============================================
+
+app.use(express.static('dist'))
