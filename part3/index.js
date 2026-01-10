@@ -136,6 +136,7 @@ app.listen(PORT, () => {
 
 const express = require('express')
 const app = express()
+app.use(express.static('dist'))
 
 let notes = [
   {
@@ -330,4 +331,23 @@ app.use(cors())
 //
 //==============================================
 
-app.use(express.static('dist'))
+// Moved up to the top 
+// app.use(express.static('dist'))
+
+
+
+//==============================================
+//
+// Part 3c: MongoDB
+//
+// Notes: - Using MongoDB Atlas 
+//
+//==============================================
+
+//==============================================
+//
+// Sub-section 1: TBD
+//
+// Notes: - 
+//
+//==============================================
