@@ -348,6 +348,8 @@ app.use(cors())
 //
 // Sub-section 1: TBD
 //
-// Notes: - 
+// Notes: - Will be installing Mongoose since it gives us an easier, higher-level API to
+//          use for object document mapping
 //
 //==============================================
+
